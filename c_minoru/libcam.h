@@ -6,13 +6,6 @@
 #ifndef __LIBCAM__H__
 #define __LIBCAM__H__
 
-//#define USE_OPENCV 1
-
-#ifdef USE_OPENCV
-#include <cv.h>
-#endif
-
-
 
 struct buffer {
         void *                  start;
@@ -73,9 +66,7 @@ public:
   bool Update(unsigned int t=100, int timeout_ms=500); //better  (t=0.1ms, in usecs)
   bool Update(Camera *c2, unsigned int t=100, int timeout_ms=500);
 
-#ifdef USE_OPENCV
-  void toIplImage(IplImage *im);
-#endif
+  void toArray(unsigned char *_l);
 
 
   void StopCam();

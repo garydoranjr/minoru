@@ -42,10 +42,6 @@
 
 #include "libcam.h"
 
-#ifdef USE_OPENCV
-#include <cv.h>
-#endif
-
 static void errno_exit (const char *           s)
 {
         fprintf (stderr, "%s error %d, %s\n",
@@ -718,10 +714,7 @@ bool Camera::Update(Camera *c2, unsigned int t, int timeout_ms) {
 
 }
 
-#ifdef USE_OPENCV
-void Camera::toIplImage(IplImage *l) {
-  unsigned char *l_=(unsigned char *)l->imageData;
-
+void Camera::toArray(unsigned char *l_) {
 
   for(int x=0; x<w2; x++) {
     for(int y=0; y<height; y++) {
@@ -745,10 +738,10 @@ void Camera::toIplImage(IplImage *l) {
       if(g < 0) g = 0;
       if(b < 0) b = 0;
 
-      i=(y*l->width+2*x)*3;
-      l_[i] = (unsigned char)(b); //B
+      i=(y*width+2*x)*3;
+      l_[i] = (unsigned char)(r); //R
       l_[i+1] = (unsigned char)(g); //G
-      l_[i+2] = (unsigned char)(r); //R
+      l_[i+2] = (unsigned char)(b); //B
 
 
       r = y1 + (1.370705 * (v-128));
@@ -762,15 +755,14 @@ void Camera::toIplImage(IplImage *l) {
       if(g < 0) g = 0;
       if(b < 0) b = 0;
 
-      l_[i+3] = (unsigned char)(b); //B
+      l_[i+3] = (unsigned char)(r); //R
       l_[i+4] = (unsigned char)(g); //G
-      l_[i+5] = (unsigned char)(r); //R
+      l_[i+5] = (unsigned char)(b); //B
 
     }
   }
 
 }
-#endif
 
 int Camera::minBrightness() {
   return mb;

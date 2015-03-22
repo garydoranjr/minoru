@@ -3,22 +3,23 @@
 /*****************************/
 #include <Python.h>
 #include <numpy/arrayobject.h>
+#include <unistd.h>
 
 #include <libcam.h>
 
 static PyObject *capture(PyObject *self, PyObject *args) {
     PyArrayObject *retleft, *retright;
 
-    char *file1=NULL, *file2=NULL;
-    int w, h, fps;
+    char *lFile=NULL, *rFile=NULL;
+    int w, h, fps, init;
     double *data;
 
     // Parse inputs
-    if (!PyArg_ParseTuple(args, "ssiii",
-        &file1, &file2, &w, &h, &fps)) {
+    if (!PyArg_ParseTuple(args, "ssiiii",
+        &lFile, &rFile, &w, &h, &fps, &init)) {
         return NULL;
     }
-    if (file1 == NULL || file2 == NULL) {
+    if (lFile == NULL || rFile == NULL) {
         return NULL;
     }
 
@@ -27,11 +28,17 @@ static PyObject *capture(PyObject *self, PyObject *args) {
     dims[0] = (npy_intp) h;
     dims[1] = (npy_intp) w;
     dims[2] = (npy_intp) 3;
-    retleft  = (PyArrayObject *)PyArray_SimpleNew(3, dims, NPY_DOUBLE);
-    retright = (PyArrayObject *)PyArray_SimpleNew(3, dims, NPY_DOUBLE);
+    retleft  = (PyArrayObject *)PyArray_SimpleNew(3, dims, NPY_UBYTE);
+    retright = (PyArrayObject *)PyArray_SimpleNew(3, dims, NPY_UBYTE);
 
-    // Set up memory for result
-    data = (double *) retleft->data;
+    // Open Cameras
+    Camera cl(lFile, w, h, fps); //left camera object using libv4lcam2
+    Camera cr(rFile, w, h, fps); //right camera object
+    cl.Update(&cr);
+    sleep(init);
+    cl.Update(&cr);
+    cl.toArray((unsigned char *) retleft->data);
+    cr.toArray((unsigned char *) retright->data);
 
     return Py_BuildValue("NN", (PyObject *)retleft, (PyObject *)retright);
 }
