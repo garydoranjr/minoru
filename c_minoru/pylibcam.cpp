@@ -1,13 +1,13 @@
-/**************************/
-/* Python Wrapper for EMD */
-/**************************/
+/*****************************/
+/* Python Wrapper for libcam */
+/*****************************/
 #include <Python.h>
 #include <numpy/arrayobject.h>
 
 #include <libcam.h>
 
 static PyObject *capture(PyObject *self, PyObject *args) {
-    PyArrayObject *retval;
+    PyArrayObject *retleft, *retright;
 
     char *file1=NULL, *file2=NULL;
     int w, h, fps;
@@ -27,22 +27,23 @@ static PyObject *capture(PyObject *self, PyObject *args) {
     dims[0] = (npy_intp) h;
     dims[1] = (npy_intp) w;
     dims[2] = (npy_intp) 3;
-    retval = (PyArrayObject *)PyArray_SimpleNew(3, dims, NPY_DOUBLE);
+    retleft  = (PyArrayObject *)PyArray_SimpleNew(3, dims, NPY_DOUBLE);
+    retright = (PyArrayObject *)PyArray_SimpleNew(3, dims, NPY_DOUBLE);
 
     // Set up memory for result
-    data = (double *) retval->data;
+    data = (double *) retleft->data;
 
-    return Py_BuildValue("N", (PyObject *)retval);
+    return Py_BuildValue("NN", (PyObject *)retleft, (PyObject *)retright);
 }
 
 static PyMethodDef c_minoru_methods[] = {
-   { "c_capture", (PyCFunction)capture, METH_VARARGS, "Capture Video Frame"},
+   { "c_capture", (PyCFunction)capture, METH_VARARGS, "Capture (Left, Right) Video Frame"},
    { NULL, NULL, 0, NULL }
 };
 
 extern "C" void initc_minoru(void)
 {
     Py_InitModule3("c_minoru", c_minoru_methods,
-                   "Box-counting kernel for generalized multiple-instance learning");
+                   "Python wrapper for libcam");
     import_array();
 }

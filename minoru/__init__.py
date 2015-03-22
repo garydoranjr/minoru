@@ -1,4 +1,4 @@
 """
-Box-counting kernel
+Minoru interface to capture image frames
 """
 from minoru import capture
