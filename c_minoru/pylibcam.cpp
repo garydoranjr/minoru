@@ -10,12 +10,12 @@ static PyObject *capture(PyObject *self, PyObject *args) {
     PyArrayObject *retleft, *retright;
 
     char *lFile=NULL, *rFile=NULL;
-    int w, h, fps, init;
+    int w, h, fps;
     double *data;
 
     // Parse inputs
     if (!PyArg_ParseTuple(args, "ssiiii",
-        &lFile, &rFile, &w, &h, &fps, &init)) {
+        &lFile, &rFile, &w, &h, &fps)) {
         return NULL;
     }
     if (lFile == NULL || rFile == NULL) {
