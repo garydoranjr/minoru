@@ -3,7 +3,6 @@
 /*****************************/
 #include <Python.h>
 #include <numpy/arrayobject.h>
-#include <unistd.h>
 
 #include <libcam.h>
 
@@ -34,8 +33,6 @@ static PyObject *capture(PyObject *self, PyObject *args) {
     // Open Cameras
     Camera cl(lFile, w, h, fps); //left camera object using libv4lcam2
     Camera cr(rFile, w, h, fps); //right camera object
-    cl.Update(&cr);
-    sleep(init);
     cl.Update(&cr);
     cl.toArray((unsigned char *) retleft->data);
     cr.toArray((unsigned char *) retright->data);

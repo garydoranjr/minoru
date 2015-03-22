@@ -12,12 +12,6 @@ struct buffer {
         size_t                  length;
 };
 
-typedef enum {
-	IO_METHOD_READ,
-	IO_METHOD_MMAP,
-	IO_METHOD_USERPTR
-} io_method;
-
 
 
 
@@ -33,9 +27,7 @@ private:
   void Start();
   void Stop();
 
-  void init_userp(unsigned int buffer_size);
   void init_mmap();
-  void init_read(unsigned int buffer_size);
 
   bool initialised;
 
@@ -50,14 +42,9 @@ public:
 
   unsigned char *data;
 
-  io_method io;
   int fd;
   buffer *buffers;
   int n_buffers;
-
-  int mb, Mb, db, mc, Mc, dc, ms, Ms, ds, mh, Mh, dh, msh, Msh, dsh;
-  bool ha;
-
 
   Camera(const char *name, int w, int h, int fps=30);
   ~Camera();
@@ -65,37 +52,8 @@ public:
   unsigned char *Get();    //deprecated
   bool Update(unsigned int t=100, int timeout_ms=500); //better  (t=0.1ms, in usecs)
   bool Update(Camera *c2, unsigned int t=100, int timeout_ms=500);
-
   void toArray(unsigned char *_l);
-
-
   void StopCam();
-
-  int minBrightness();
-  int maxBrightness();
-  int defaultBrightness();
-  int minContrast();
-  int maxContrast();
-  int defaultContrast();
-  int minSaturation();
-  int maxSaturation();
-  int defaultSaturation();
-  int minHue();
-  int maxHue();
-  int defaultHue();
-  bool isHueAuto();
-  int minSharpness();
-  int maxSharpness();
-  int defaultSharpness();
-
-  int setBrightness(int v);
-  int setContrast(int v);
-  int setSaturation(int v);
-  int setHue(int v);
-  int setHueAuto(bool v);
-  int setSharpness(int v);
-
-
 
 };
 
