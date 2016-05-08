@@ -14,7 +14,7 @@ static PyObject *capture(PyObject *self, PyObject *args) {
     double *data;
 
     // Parse inputs
-    if (!PyArg_ParseTuple(args, "ssiiii",
+    if (!PyArg_ParseTuple(args, "ssiii",
         &lFile, &rFile, &w, &h, &fps)) {
         return NULL;
     }
